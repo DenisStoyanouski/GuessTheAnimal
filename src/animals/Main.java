@@ -63,23 +63,22 @@ public class Main {
 
     private static void printQuestion(String animalWithArticle) {
         System.out.printf("Is it %s?%n", animalWithArticle);
-        checkConfirmation(input());
+        while (!checkConfirmation(input())) {
+            System.out.println("Come on, yes or no?");
+        }
+        sayGoodBye();
     }
 
-    private static void checkConfirmation(String confirmation) {
-        boolean check = true;
-        do {
+    private static boolean checkConfirmation(String confirmation) {
+        boolean check = false;
             if (positiveAnswers.contains(confirmation)) {
                 System.out.println("You answered: Yes");
-                sayGoodBye();
+                check = true;
             } else if (negativeAnswers.contains(confirmation)) {
                 System.out.println("You answered: No");
-                sayGoodBye();
-            } else {
-                System.out.println("Come on, yes or no?");
-                check = false;
+                check = true;
             }
-        } while (!check);
+        return check;
     }
 
     private static void sayGoodBye() {

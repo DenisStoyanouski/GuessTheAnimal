@@ -1,6 +1,8 @@
 package animals;
 
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -12,10 +14,10 @@ public class Main {
     final static LocalTime morning = LocalTime.of(5,0);
     final static LocalTime evening = LocalTime.of(18,0);
 
-    final static String[] positiveAnswers = {"y", "yes", "yeah", "yep", "sure", "right", "affirmative", "correct",
-            "indeed", "you bet", "exactly", "you said it"};
+    final static List<String > positiveAnswers = List.of("y", "yes", "yeah", "yep", "sure", "right", "affirmative", "correct",
+            "indeed", "you bet", "exactly", "you said it");
 
-    final static String[] negativeAnswers = {"n", "no", "no way", "nah", "nope", "negative", "I don't think so", "yeah no"};
+    final static List<String> negativeAnswers = List.of("n", "no", "no way", "nah", "nope", "negative", "I don't think so", "yeah no");
 
 
 
@@ -54,14 +56,37 @@ public class Main {
         if (animal.length == 1 && animal[0].matches("\\b[aeiyou].*\\b")) {
             animalWithArticle = "an " + animal[0];
         } else {
-            animalWithArticle = "a" + animal[0];
+            animalWithArticle = "a " + animal[0];
         }
         printQuestion(animalWithArticle);
     }
 
-    private static void printQuestion(String animal) {
-        System.out.printf("Is it %s?%n", animal);
+    private static void printQuestion(String animalWithArticle) {
+        System.out.printf("Is it %s?%n", animalWithArticle);
+        checkConfirmation(input());
     }
+
+    private static void checkConfirmation(String confirmation) {
+        boolean check = true;
+        do {
+            if (positiveAnswers.contains(confirmation)) {
+                System.out.println("You answered: Yes");
+                sayGoodBye();
+            } else if (negativeAnswers.contains(confirmation)) {
+                System.out.println("You answered: No");
+                sayGoodBye();
+            } else {
+                System.out.println("Come on, yes or no?");
+                check = false;
+            }
+        } while (!check);
+    }
+
+    private static void sayGoodBye() {
+        System.out.println("bye");
+    }
+
+
 }
 
 

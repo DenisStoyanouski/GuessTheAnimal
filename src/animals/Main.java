@@ -12,6 +12,11 @@ public class Main {
     final static LocalTime morning = LocalTime.of(5,0);
     final static LocalTime evening = LocalTime.of(18,0);
 
+    final static String[] positiveAnswers = {"y", "yes", "yeah", "yep", "sure", "right", "affirmative", "correct",
+            "indeed", "you bet", "exactly", "you said it"};
+
+    final static String[] negativeAnswers = {"n", "no", "no way", "nah", "nope", "negative", "I don't think so", "yeah no"};
+
 
 
     public static void main(String[] args) {

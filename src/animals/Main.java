@@ -73,14 +73,14 @@ public class Main {
 
     private static void printQuestion(String animalWithArticle) {
         System.out.printf("Is it %s?%n", animalWithArticle);
-        while (!checkConfirmation(input())) {
+        while (!isRightConfirmation(input())) {
             askClarificationQuestion();
             System.out.println("Come on, yes or no?");
         }
         sayGoodBye();
     }
 
-    private static boolean checkConfirmation(String confirmation) {
+    private static boolean isRightConfirmation(String confirmation) {
         boolean check = false;
             if (positiveAnswers.contains(confirmation)) {
                 System.out.println("You answered: Yes");
@@ -93,20 +93,20 @@ public class Main {
     }
 
     private static void askClarificationQuestion() {
-        System.out.println(chooseQuestion());
+        System.out.println(chooseClarificationQuestion());
     }
 
-    private static String chooseQuestion() {
+    private static String chooseClarificationQuestion() {
         Random random = new Random();
         int indexOfQuestion = random.nextInt(clarificationQuestions.size());
         return clarificationQuestions.get(indexOfQuestion);
     }
 
     private static void sayGoodBye() {
-        System.out.println(chooseWhoSayGoodbye());
+        System.out.println(chooseHowSayGoodbye());
     }
 
-    private static String chooseWhoSayGoodbye() {
+    private static String chooseHowSayGoodbye() {
         Random random = new Random();
         int indexOfPhrase = random.nextInt(phrasesToSayGoodbye.size());
         return phrasesToSayGoodbye.get(indexOfPhrase);

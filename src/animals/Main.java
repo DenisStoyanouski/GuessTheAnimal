@@ -3,6 +3,7 @@ package animals;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
@@ -19,12 +20,19 @@ public class Main {
 
     final static List<String> negativeAnswers = List.of("n", "no", "no way", "nah", "nope", "negative", "I don't think so", "yeah no");
 
+    final static List<String> clarificationQuestions = List.of("I'm not sure I caught you: was it yes or no?",
+                                                                "Funny, I still don't understand, is it yes or no?",
+                                                                "Oh, it's too complicated for me: just tell me yes or no.",
+                                                                "Could you please simply say yes or no?",
+                                                                "Oh, no, don't try to confuse me: say yes or no.");
 
+    final static List<String> phrasesToSayGoodbye = List.of("Bye", "Goodbye", "See you later", "Have a nice day");
 
     public static void main(String[] args) {
         greetUser();
     }
     private static void greetUser() {
+        // depend on local time say greetings
         if (now.isAfter(LocalTime.MIDNIGHT) && now.isBefore(night)) {
             System.out.println("Hi, Night Owl");
         }else if (now.isAfter(night) && now.isBefore(morning)) {
@@ -46,17 +54,19 @@ public class Main {
     }
 
     private static String input() {
+        //create strings array and delete all articles before animal
         Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine().strip().toLowerCase();
+        return scanner.nextLine().replaceAll("(\\ba |\\ban |\\bthe )", "").strip().toLowerCase();
     }
 
     private static void checkInput(String input) {
+        //check first letter(vowel or not) in name of animal and add article by rules
         String[] animal = input.split("\\s+");
-        String animalWithArticle = "";
-        if (animal.length == 1 && animal[0].matches("\\b[aeiyou].*\\b")) {
-            animalWithArticle = "an " + animal[0];
+        String animalWithArticle;
+        if (animal[0].matches("\\b[aeiyou].*\\b")) {
+            animalWithArticle = "an " + Arrays.toString(animal).replaceAll("[,\\]\\[]","");
         } else {
-            animalWithArticle = "a " + animal[0];
+            animalWithArticle = "a " + Arrays.toString(animal).replaceAll("[,\\]\\[]","");
         }
         printQuestion(animalWithArticle);
     }
@@ -64,6 +74,7 @@ public class Main {
     private static void printQuestion(String animalWithArticle) {
         System.out.printf("Is it %s?%n", animalWithArticle);
         while (!checkConfirmation(input())) {
+            askClarificationQuestion();
             System.out.println("Come on, yes or no?");
         }
         sayGoodBye();
@@ -81,8 +92,24 @@ public class Main {
         return check;
     }
 
+    private static void askClarificationQuestion() {
+        System.out.println(chooseQuestion());
+    }
+
+    private static String chooseQuestion() {
+        Random random = new Random();
+        int indexOfQuestion = random.nextInt(clarificationQuestions.size());
+        return clarificationQuestions.get(indexOfQuestion);
+    }
+
     private static void sayGoodBye() {
-        System.out.println("bye");
+        System.out.println(chooseWhoSayGoodbye());
+    }
+
+    private static String chooseWhoSayGoodbye() {
+        Random random = new Random();
+        int indexOfPhrase = random.nextInt(phrasesToSayGoodbye.size());
+        return phrasesToSayGoodbye.get(indexOfPhrase);
     }
 
 

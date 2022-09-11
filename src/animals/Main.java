@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
+
 public class Main {
 
     final static LocalTime now = LocalTime.now();
@@ -56,14 +57,14 @@ public class Main {
     private static String input() {
         //create strings array and delete all articles before animal
         Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine().replaceAll("(\\ba |\\ban |\\bthe )", "").strip().toLowerCase();
+        return scanner.nextLine().toLowerCase().replaceAll("(\\ba |\\ban |\\bthe )", "").strip().toLowerCase();
     }
 
     private static void checkInput(String input) {
         //check first letter(vowel or not) in name of animal and add article by rules
         String[] animal = input.split("\\s+");
         String animalWithArticle;
-        if (animal[0].matches("\\b[aeiyou].*\\b")) {
+        if (animal[0].matches("\\b[aeiyo].*\\b|xeme")) {
             animalWithArticle = "an " + Arrays.toString(animal).replaceAll("[,\\]\\[]","");
         } else {
             animalWithArticle = "a " + Arrays.toString(animal).replaceAll("[,\\]\\[]","");
@@ -75,20 +76,27 @@ public class Main {
         System.out.printf("Is it %s?%n", animalWithArticle);
         while (!isRightConfirmation(input())) {
             askClarificationQuestion();
-            System.out.println("Come on, yes or no?");
         }
         sayGoodBye();
     }
 
     private static boolean isRightConfirmation(String confirmation) {
         boolean check = false;
-            if (positiveAnswers.contains(confirmation)) {
+        for (String answer : positiveAnswers) {
+            if (confirmation.matches(answer + "[!.]?")) {
                 System.out.println("You answered: Yes");
                 check = true;
-            } else if (negativeAnswers.contains(confirmation)) {
+                break;
+            }
+        }
+        for (String answer : negativeAnswers) {
+            if (confirmation.matches(answer + "[!.]?")) {
                 System.out.println("You answered: No");
                 check = true;
+                break;
             }
+        }
+
         return check;
     }
 

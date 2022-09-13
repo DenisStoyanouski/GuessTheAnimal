@@ -1,7 +1,8 @@
 package animals;
 import java.time.LocalTime;
 import java.util.*;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class Main {
@@ -113,7 +114,9 @@ public class Main {
     }
 
     private static boolean isCorrectFact(String fact) {
-        return fact.matches("^It\\s(can|has|is)\\s.*");
+        Pattern pattern = Pattern.compile("^It\\s(can|has|is)\\s.*", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(fact);
+        return matcher.matches();
     }
 
     private static void printResume(String pattern) {

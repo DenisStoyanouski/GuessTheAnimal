@@ -1,14 +1,11 @@
 package animals;
 
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class Main {
-
+    static SortedMap<String, String> animals = new TreeMap<>();
     final static LocalTime now = LocalTime.now();
 
     final static LocalTime night = LocalTime.of(3,0);
@@ -45,13 +42,16 @@ public class Main {
         } else {
             System.out.println("Good evening");
         }
-        enterAnimal();
+        enterAnimals();
 
     }
 
-    private static void enterAnimal() {
-        System.out.println("Enter an animal:");
-        checkInput(input());
+    private static void enterAnimals() {
+        System.out.println("Enter the first animal:");
+        inputNameOfAnimal(input());
+        System.out.println("Enter the second animal:");
+        inputNameOfAnimal(input());
+        specifyFacts();
     }
 
     private static String input() {
@@ -60,18 +60,24 @@ public class Main {
         return scanner.nextLine().toLowerCase().replaceAll("(\\ba |\\ban |\\bthe )", "").strip().toLowerCase();
     }
 
-    private static void checkInput(String input) {
+    private static void inputNameOfAnimal(String nameOfAnimal) {
         //check first letter(vowel or not) in name of animal and add article by rules
-        String[] animal = input.split("\\s+");
+
         String animalWithArticle;
-        if (animal[0].matches("\\b[aeiyo].*\\b|xeme")) {
-            animalWithArticle = "an " + Arrays.toString(animal).replaceAll("[,\\]\\[]","");
+        if (nameOfAnimal.matches("^[aeiyo].*\\b\\s?\\w*|^xeme\\s?\\w*")) {
+            animalWithArticle = "an " + nameOfAnimal;
+            animals.put(animalWithArticle, null);
         } else {
-            animalWithArticle = "a " + Arrays.toString(animal).replaceAll("[,\\]\\[]","");
+            animalWithArticle = "a " + nameOfAnimal;
+            animals.put(animalWithArticle, null);
         }
-        printQuestion(animalWithArticle);
+        /*printQuestion(animalWithArticle);*/
     }
 
+    private static void specifyFacts() {
+        System.out.printf("Specify a fact that distinguishes %s from %s.%n", animals.firstKey(), animals.lastKey());
+        System.out.println("The sentence should be of the format: 'It can/has/is ...'.");
+    }
     private static void printQuestion(String animalWithArticle) {
         System.out.printf("Is it %s?%n", animalWithArticle);
         while (!isRightConfirmation(input())) {

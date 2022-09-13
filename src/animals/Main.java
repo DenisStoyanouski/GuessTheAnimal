@@ -15,7 +15,7 @@ public class Main {
     final static LocalTime morning = LocalTime.of(5,0);
     final static LocalTime evening = LocalTime.of(18,0);
 
-    /*final static List<String > positiveAnswers = List.of("y", "yes", "yeah", "yep", "sure", "right", "affirmative", "correct",
+    final static List<String > positiveAnswers = List.of("y", "yes", "yeah", "yep", "sure", "right", "affirmative", "correct",
             "indeed", "you bet", "exactly", "you said it");
 
     final static List<String> negativeAnswers = List.of("n", "no", "no way", "nah", "nope", "negative", "I don't think so", "yeah no");
@@ -25,7 +25,6 @@ public class Main {
                                                                 "Oh, it's too complicated for me: just tell me yes or no.",
                                                                 "Could you please simply say yes or no?",
                                                                 "Oh, no, don't try to confuse me: say yes or no.");
-*/
     final static List<String> phrasesToSayGoodbye = List.of("Bye", "Goodbye", "See you later", "Have a nice day");
 
     public static void main(String[] args) {
@@ -97,16 +96,22 @@ public class Main {
     }
 
     private static void addFactToAnotherAnimal(String pattern) {
+
         System.out.printf("Is it correct for %s?%n", listOfAnimals.get(1));
         String s = pattern.replaceFirst("\\bcan\\b", "can't")
                 .replaceFirst("\\bhas\\b", "doesn't have")
                 .replaceAll("\\bis\\b", "isn't");
 
-        if ("No".equals(input())) {
+        String answer = input().toLowerCase();
+        while (!isRightConfirmation(answer)) {
+            askClarificationQuestion();
+            answer = input().toLowerCase();
+        }
+        if (negativeAnswers.contains(answer)) {
             animals.put(listOfAnimals.get(1), s);
             animals.put(listOfAnimals.get(0), pattern);
 
-        } else {
+        } else if (positiveAnswers.contains(answer)) {
             animals.put(listOfAnimals.get(0), s);
             animals.put(listOfAnimals.get(1), pattern);
         }
@@ -131,30 +136,16 @@ public class Main {
         sayGoodBye();
     }
 
-
-
-
-
-    /*private static void printQuestion(String animalWithArticle) {
-        System.out.printf("Is it %s?%n", animalWithArticle);
-        while (!isRightConfirmation(input())) {
-            askClarificationQuestion();
-        }
-        sayGoodBye();
-    }
-
     private static boolean isRightConfirmation(String confirmation) {
         boolean check = false;
         for (String answer : positiveAnswers) {
             if (confirmation.matches(answer + "[!.]?")) {
-                System.out.println("You answered: Yes");
                 check = true;
                 break;
             }
         }
         for (String answer : negativeAnswers) {
             if (confirmation.matches(answer + "[!.]?")) {
-                System.out.println("You answered: No");
                 check = true;
                 break;
             }
@@ -171,7 +162,7 @@ public class Main {
         Random random = new Random();
         int indexOfQuestion = random.nextInt(clarificationQuestions.size());
         return clarificationQuestions.get(indexOfQuestion);
-    }*/
+    }
 
     private static void sayGoodBye() {
         System.out.println(chooseHowSayGoodbye());

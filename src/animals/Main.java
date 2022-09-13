@@ -84,7 +84,6 @@ public class Main {
             if (isCorrectFact(fact)) {
                 String pattern = fact.replaceAll("\\bIt\\b\\s", "").
                         replaceAll("[!?.,:;]+", "");
-                animals.put(listOfAnimals.get(0), pattern);
                 addFactToAnotherAnimal(pattern);
 
             } else {
@@ -98,11 +97,16 @@ public class Main {
 
     private static void addFactToAnotherAnimal(String pattern) {
         System.out.printf("Is it correct for %s?%n", listOfAnimals.get(1));
+        String s = pattern.replaceFirst("\\bcan\\b", "can't")
+                .replaceFirst("\\bhas\\b", "doesn't have")
+                .replaceAll("\\bis\\b", "isn't");
+
         if ("No".equals(input())) {
-            animals.put(listOfAnimals.get(1), pattern.replaceFirst("\\bcan\\b","cannot")
-                        .replaceFirst("\\bhas\\b", "doesn't have")
-                        .replaceAll("\\bis\\b","isn't'"));
+            animals.put(listOfAnimals.get(1), s);
+            animals.put(listOfAnimals.get(0), pattern);
+
         } else {
+            animals.put(listOfAnimals.get(0), s);
             animals.put(listOfAnimals.get(1), pattern);
         }
         printResume(pattern);

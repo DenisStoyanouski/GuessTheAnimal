@@ -63,8 +63,10 @@ public class Main {
 
     private static void inputNameOfAnimal(String nameOfAnimal) {
         //check first letter(vowel or not) in name of animal and add article by rules
+        nameOfAnimal = nameOfAnimal.replaceAll("\\b(a|an|the)\\b\\s", "");
         String animalWithArticle;
-        if (nameOfAnimal.toLowerCase().matches("^[aeiyo].*\\b\\s?\\w*|^xeme\\s?\\w*")) {
+
+        if (nameOfAnimal.toLowerCase().matches("^[aeiyou].*\\b\\s?\\w*|^xeme\\s?\\w*")) {
             animalWithArticle = "an " + nameOfAnimal.toLowerCase();
         } else {
             animalWithArticle = "a " + nameOfAnimal.toLowerCase();
@@ -82,7 +84,7 @@ public class Main {
     private static void addFact(String fact) {
 
             if (isCorrectFact(fact)) {
-                String pattern = fact.replaceAll("\\bIt\\b\\s", "").
+                String pattern = fact.replaceAll("\\b(It|it)\\b\\s", "").
                         replaceAll("[!?.,:;]+", "");
                 addFactToAnotherAnimal(pattern);
 
@@ -129,9 +131,9 @@ public class Main {
         System.out.printf("- %s %s.%n", listOfAnimals.get(0).replaceFirst("\\b(a|an)\\b", "The"), animals.get(listOfAnimals.get(0)));
         System.out.printf("- %s %s.%n", listOfAnimals.get(1).replaceFirst("\\b(a|an)\\b", "The"), animals.get(listOfAnimals.get(1)));
         System.out.println("I can distinguish these animals by asking the question:");
-        System.out.printf("- %s?%n", pattern.replaceFirst("\\bcan\\b", "Can it")
-                .replaceFirst("\\bhas\\b", "Does it have")
-                .replaceFirst("\\bis\\b", "Is it"));
+        System.out.printf("- %s?%n", pattern.replaceFirst("can", "Can it")
+                .replaceFirst("has", "Does it have")
+                .replaceFirst("is", "Is it"));
 
         sayGoodBye();
     }

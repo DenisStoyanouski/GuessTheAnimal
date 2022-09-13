@@ -14,7 +14,7 @@ public class Main {
     final static LocalTime morning = LocalTime.of(5,0);
     final static LocalTime evening = LocalTime.of(18,0);
 
-    final static List<String > positiveAnswers = List.of("y", "yes", "yeah", "yep", "sure", "right", "affirmative", "correct",
+    /*final static List<String > positiveAnswers = List.of("y", "yes", "yeah", "yep", "sure", "right", "affirmative", "correct",
             "indeed", "you bet", "exactly", "you said it");
 
     final static List<String> negativeAnswers = List.of("n", "no", "no way", "nah", "nope", "negative", "I don't think so", "yeah no");
@@ -24,7 +24,7 @@ public class Main {
                                                                 "Oh, it's too complicated for me: just tell me yes or no.",
                                                                 "Could you please simply say yes or no?",
                                                                 "Oh, no, don't try to confuse me: say yes or no.");
-
+*/
     final static List<String> phrasesToSayGoodbye = List.of("Bye", "Goodbye", "See you later", "Have a nice day");
 
     public static void main(String[] args) {
@@ -132,7 +132,7 @@ public class Main {
 
 
 
-    private static void printQuestion(String animalWithArticle) {
+    /*private static void printQuestion(String animalWithArticle) {
         System.out.printf("Is it %s?%n", animalWithArticle);
         while (!isRightConfirmation(input())) {
             askClarificationQuestion();
@@ -168,7 +168,7 @@ public class Main {
         Random random = new Random();
         int indexOfQuestion = random.nextInt(clarificationQuestions.size());
         return clarificationQuestions.get(indexOfQuestion);
-    }
+    }*/
 
     private static void sayGoodBye() {
         System.out.println(chooseHowSayGoodbye());

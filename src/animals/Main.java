@@ -76,33 +76,55 @@ public class Main {
     private static void specifyFacts() {
         System.out.printf("Specify a fact that distinguishes %s from %s.%n", animals.firstKey(), animals.lastKey());
         System.out.println("The sentence should be of the format: 'It can/has/is ...'.");
-        isCorrectAnswer(input());
+        addFact(input());
     }
 
-    private static void isCorrectAnswer(String fact) {
+    private static void addFact(String fact) {
 
-        if (fact.matches("^It\\s(can|has|is)\\s.*")) {
-            String pattern = fact.replaceAll("\\bIt\\b\\s", "").
-                    replaceAll("[!?.,:;]+", "");
-            animals.putIfAbsent(animals.firstKey(), pattern);
-            System.out.printf("Is it correct for %s?%n", animals.lastKey());
+            if (isCorrectFact(fact)) {
+                String pattern = fact.replaceAll("\\bIt\\b\\s", "").
+                        replaceAll("[!?.,:;]+", "");
+                animals.putIfAbsent(animals.firstKey(), pattern);
+                addFactToAnotherAnimal(pattern);
 
-            if ("No".equals(input())) {
-                animals.putIfAbsent(animals.lastKey(), pattern.replaceFirst("\\bcan\\b","cannot")
+            } else {
+                System.out.println("The examples of a statement:");
+                System.out.println("- It can fly");
+                System.out.println("- It has horn");
+                System.out.println("- It is a mammal");
+                specifyFacts();
+            }
+    }
+
+    private static void addFactToAnotherAnimal(String pattern) {
+        System.out.printf("Is it correct for %s?%n", animals.lastKey());
+        if ("No".equals(input())) {
+            animals.putIfAbsent(animals.lastKey(), pattern.replaceFirst("\\bcan\\b","cannot")
                         .replaceFirst("\\bhas\\b", "doesn't have")
                         .replaceAll("\\bis\\b","isn't'"));
-
-                System.out.println("I have learned the following facts about animals:");
-                System.out.printf("-%s %s.%n", animals.firstKey().replaceFirst("\\b(a|an)\\b", "The"), animals.get(animals.firstKey()));
-                System.out.printf("-%s %s.%n", animals.lastKey().replaceFirst("\\b(a|an)\\b", "The"), animals.get(animals.lastKey()));
-                System.out.println("I can distinguish these animals by asking the question:");
-                System.out.printf("- %s?%n", pattern.replaceFirst("\\bcan\\b", "Can it")
-                        .replaceFirst("\\bhas\\b", "Has it")
-                        .replaceFirst("\\bis\\b", "Is is"));
-            }
+        } else {
+            animals.putIfAbsent(animals.firstKey(), pattern);
         }
+        printResume(pattern);
+    }
+
+    private static boolean isCorrectFact(String fact) {
+        return fact.matches("^It\\s(can|has|is)\\s.*");
+    }
+
+    private static void printResume(String pattern) {
+        System.out.println("I have learned the following facts about animals:");
+        System.out.printf("-%s %s.%n", animals.firstKey().replaceFirst("\\b(a|an)\\b", "The"), animals.get(animals.firstKey()));
+        System.out.printf("-%s %s.%n", animals.lastKey().replaceFirst("\\b(a|an)\\b", "The"), animals.get(animals.lastKey()));
+        System.out.println("I can distinguish these animals by asking the question:");
+        System.out.printf("- %s?%n", pattern.replaceFirst("\\bcan\\b", "Can it")
+                .replaceFirst("\\bhas\\b", "Has it")
+                .replaceFirst("\\bis\\b", "Is is"));
+
         sayGoodBye();
     }
+
+
 
 
 

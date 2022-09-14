@@ -1,4 +1,5 @@
 package animals;
+import java.sql.SQLOutput;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -27,8 +28,6 @@ public class Main {
                                                                 "Oh, no, don't try to confuse me: say yes or no.");
     final static List<String> phrasesToSayGoodbye = List.of("Bye", "Goodbye", "See you later", "Have a nice day");
 
-    static BinaryTree tree = new BinaryTree();
-
     public static void main(String[] args) {
         greetUser();
     }
@@ -53,9 +52,9 @@ public class Main {
         System.out.println("I want to learn about animals.");
         System.out.println("Which animal do you like most?");
         inputNameOfAnimal(input());
-        System.out.println("Enter the second animal:");
+        /*System.out.println("Enter the second animal:");
         inputNameOfAnimal(input());
-        specifyFacts();
+        specifyFacts();*/
     }
 
     private static String input() {
@@ -74,12 +73,21 @@ public class Main {
         } else {
             animalWithArticle = "a " + nameOfAnimal.toLowerCase();
         }
-        addToTree(animalWithArticle);
-        /*printQuestion(animalWithArticle);*/
+        createTree(animalWithArticle);
+        playGame();
+
     }
 
-    private static void addToTree(String node) {
-        tree.root = new Node(node);
+    private static void createTree(String root) {
+        BinaryTree tree = new BinaryTree(root);
+        System.out.println(tree.root.value);
+    }
+
+    private static void playGame() {
+        System.out.printf("Wonderful! I've learned so much about animals!\n" +
+                "Let's play a game!\n" +
+                "You think of an animal, and I guess it.\n" +
+                "Press enter when you're ready.%n");
     }
 
     private static void specifyFacts() {

@@ -12,4 +12,5 @@ public class BinaryTree {
     BinaryTree() {
         root = null;
     }
+
 }

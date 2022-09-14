@@ -27,6 +27,8 @@ public class Main {
                                                                 "Oh, no, don't try to confuse me: say yes or no.");
     final static List<String> phrasesToSayGoodbye = List.of("Bye", "Goodbye", "See you later", "Have a nice day");
 
+    static BinaryTree tree = new BinaryTree();
+
     public static void main(String[] args) {
         greetUser();
     }
@@ -72,8 +74,12 @@ public class Main {
         } else {
             animalWithArticle = "a " + nameOfAnimal.toLowerCase();
         }
-        listOfAnimals.add(animalWithArticle);
+        addToTree(animalWithArticle);
         /*printQuestion(animalWithArticle);*/
+    }
+
+    private static void addToTree(String node) {
+        tree.root = new Node(node);
     }
 
     private static void specifyFacts() {

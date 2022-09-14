@@ -48,7 +48,8 @@ public class Main {
     }
 
     private static void enterAnimals() {
-        System.out.println("Enter the first animal:");
+        System.out.println("I want to learn about animals.");
+        System.out.println("Which animal do you like most?");
         inputNameOfAnimal(input());
         System.out.println("Enter the second animal:");
         inputNameOfAnimal(input());

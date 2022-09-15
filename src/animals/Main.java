@@ -16,7 +16,7 @@ public class Main {
     final static List<String > positiveAnswers = List.of("y", "yes", "yeah", "yep", "sure", "right", "affirmative", "correct",
             "indeed", "you bet", "exactly", "you said it");
 
-    final static List<String> negativeAnswers = List.of("n", "no", "no way", "nah", "nope", "negative", "I don't think so", "yeah no");
+    final static List<String> negativeAnswers = List.of("n", "no", "no way", "nah", "nope", "negative", "i don't think so", "yeah no");
 
     final static List<String> clarificationQuestions = List.of("I'm not sure I caught you: was it yes or no?",
                                                                 "Funny, I still don't understand, is it yes or no?",
@@ -94,12 +94,19 @@ public class Main {
         } while (!line.isBlank());
 
         System.out.printf("Is it %s?%n", yes);
-        String answer = input().toLowerCase();
-        if (negativeAnswers.contains(answer)) {
+        String confirmation = input().toLowerCase().strip();
+        while (!isRightConfirmation(confirmation)) {
+            askClarificationQuestion();
+            confirmation = input().toLowerCase().strip();
+        }
+        if (negativeAnswers.contains(confirmation.replaceAll("!\\.",""))) {
             System.out.println("I give up. What animal do you have in mind?");
             no = addArticle(input());
+            specifyFacts();
+        } else if (positiveAnswers.contains(confirmation.replaceAll("!\\.",""))) {
+            repeatGame();
         }
-        specifyFacts();
+
     }
 
     private static void specifyFacts() {
@@ -134,10 +141,10 @@ public class Main {
     private static void addFactToAnotherAnimal(String fact) {
 
         System.out.printf("Is the statement correct for %s?%n", no);
-
-        String confirmation = input().toLowerCase();
+        String confirmation = input().toLowerCase().strip();
         while (!isRightConfirmation(confirmation)) {
             askClarificationQuestion();
+            confirmation = input().toLowerCase();
         }
         tree.root = new Node(fact);
         if (negativeAnswers.contains(confirmation.replaceAll("!\\.", ""))) {
@@ -151,7 +158,7 @@ public class Main {
     }
 
     private static void printResume(String fact) {
-        String positive = fact.replaceFirst("It\\s", "");
+        String positive = fact.replaceFirst("(It|it)\\s", "");
         String negative = positive.replaceFirst("\\bcan\\b", "can't")
                 .replaceFirst("\\bhas\\b", "doesn't have")
                 .replaceFirst("\\bis\\b", "isn't");
@@ -171,11 +178,16 @@ public class Main {
         String confirmation = input().toLowerCase();
         while (!isRightConfirmation(confirmation)) {
             askClarificationQuestion();
+            confirmation = input().toLowerCase();
         }
         if (negativeAnswers.contains(confirmation.replaceAll("!\\.", ""))) {
             sayGoodBye();
+        } else if (positiveAnswers.contains(confirmation.replaceAll("!\\.", ""))) {
+            playGame();
         }
     }
+
+
 
     private static boolean isRightConfirmation(String confirmation) {
         boolean check = false;

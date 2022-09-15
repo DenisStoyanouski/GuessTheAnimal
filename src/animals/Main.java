@@ -1,5 +1,4 @@
 package animals;
-import java.sql.SQLOutput;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -27,7 +26,11 @@ public class Main {
                                                                 "Could you please simply say yes or no?",
                                                                 "Oh, no, don't try to confuse me: say yes or no.");
     final static List<String> phrasesToSayGoodbye = List.of("Bye", "Goodbye", "See you later", "Have a nice day");
+    static BinaryTree tree = new BinaryTree();
 
+    static String yes;
+
+    static String no;
     public static void main(String[] args) {
         greetUser();
     }
@@ -51,10 +54,9 @@ public class Main {
     private static void enterAnimals() {
         System.out.println("I want to learn about animals.");
         System.out.println("Which animal do you like most?");
-        inputNameOfAnimal(input());
-        /*System.out.println("Enter the second animal:");
-        inputNameOfAnimal(input());
-        specifyFacts();*/
+        yes = addArticle(input());
+        playGame();
+
     }
 
     private static String input() {
@@ -63,7 +65,7 @@ public class Main {
         return scanner.nextLine();
     }
 
-    private static void inputNameOfAnimal(String nameOfAnimal) {
+    private static String addArticle(String nameOfAnimal) {
         //check first letter(vowel or not) in name of animal and add article by rules
         nameOfAnimal = nameOfAnimal.replaceAll("\\b(a|an|the)\\b\\s", "");
         String animalWithArticle;
@@ -73,14 +75,8 @@ public class Main {
         } else {
             animalWithArticle = "a " + nameOfAnimal.toLowerCase();
         }
-        createTree(animalWithArticle);
-        playGame();
+        return animalWithArticle;
 
-    }
-
-    private static void createTree(String root) {
-        BinaryTree tree = new BinaryTree(root);
-        System.out.println(tree.root.value);
     }
 
     private static void playGame() {
@@ -88,11 +84,21 @@ public class Main {
                 "Let's play a game!\n" +
                 "You think of an animal, and I guess it.\n" +
                 "Press enter when you're ready.%n");
+        System.out.printf("It is %s?%n", yes);
+        String answer = input().toLowerCase();
+        if (negativeAnswers.contains(answer)) {
+            System.out.println("I give up. What animal do you have in mind?");
+            no = addArticle(input());
+        }
+        specifyFacts();
     }
 
     private static void specifyFacts() {
-        System.out.printf("Specify a fact that distinguishes %s from %s.%n", listOfAnimals.get(0), listOfAnimals.get(1));
-        System.out.println("The sentence should be of the format: 'It can/has/is ...'.");
+        System.out.printf("Specify a fact that distinguishes %s from %s.%n", yes, no);
+        System.out.printf("The sentence should be of the format: %n" +
+                "- It can ...%n" +
+                "- It has ...%n" +
+                "- It is a/an...%n");
         addFact(input());
     }
 
@@ -101,7 +107,7 @@ public class Main {
             if (isCorrectFact(fact)) {
                 String pattern = fact.replaceAll("\\b(It|it)\\b\\s", "").
                         replaceAll("[!?.,:;]+", "");
-                addFactToAnotherAnimal(pattern);
+                addFactToAnotherAnimal(fact);
 
             } else {
                 System.out.println("The examples of a statement:");
@@ -112,41 +118,41 @@ public class Main {
             }
     }
 
-    private static void addFactToAnotherAnimal(String pattern) {
-
-        System.out.printf("Is it correct for %s?%n", listOfAnimals.get(1));
-        String s = pattern.replaceFirst("\\bcan\\b", "can't")
-                .replaceFirst("\\bhas\\b", "doesn't have")
-                .replaceAll("\\bis\\b", "isn't");
-
-        String answer = input().toLowerCase();
-        while (!isRightConfirmation(answer)) {
-            askClarificationQuestion();
-            answer = input().toLowerCase();
-        }
-        if (negativeAnswers.contains(answer)) {
-            animals.put(listOfAnimals.get(1), s);
-            animals.put(listOfAnimals.get(0), pattern);
-
-        } else if (positiveAnswers.contains(answer)) {
-            animals.put(listOfAnimals.get(0), s);
-            animals.put(listOfAnimals.get(1), pattern);
-        }
-        printResume(pattern);
-    }
-
     private static boolean isCorrectFact(String fact) {
         Pattern pattern = Pattern.compile("^It\\s(can|has|is)\\s.*", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(fact);
         return matcher.matches();
     }
 
-    private static void printResume(String pattern) {
+    private static void addFactToAnotherAnimal(String fact) {
+
+        System.out.printf("Is the statement correct for %s?%n", no);
+
+        String confirmation = input().toLowerCase();
+        while (!isRightConfirmation(confirmation)) {
+            askClarificationQuestion();
+        }
+        tree.root = new Node(fact);
+        if (negativeAnswers.contains(confirmation)) {
+            tree.root.left = new Node(yes);
+            tree.root.right = new Node(no);
+
+        } //else if (positiveAnswers.contains(confirmation)) {
+
+        //}
+        printResume(fact);
+    }
+
+    private static void printResume(String fact) {
+        String positive = fact.replaceFirst("It\\s", "");
+        String negative = positive.replaceFirst("\\bcan\\b", "can't")
+                .replaceFirst("\\bhas\\b", "doesn't have")
+                .replaceFirst("\\bis\\b", "isn't");
         System.out.println("I have learned the following facts about animals:");
-        System.out.printf("- %s %s.%n", listOfAnimals.get(0).replaceFirst("\\b(a|an)\\b", "The"), animals.get(listOfAnimals.get(0)));
-        System.out.printf("- %s %s.%n", listOfAnimals.get(1).replaceFirst("\\b(a|an)\\b", "The"), animals.get(listOfAnimals.get(1)));
+        System.out.printf("- %s %s.%n", tree.root.left.value.replaceFirst("\\b(a|an)\\b", "The"), animals.get(listOfAnimals.get(0)));
+        System.out.printf("- %s %s.%n", tree.root.right.value.replaceFirst("\\b(a|an)\\b", "The"), animals.get(listOfAnimals.get(1)));
         System.out.println("I can distinguish these animals by asking the question:");
-        System.out.printf("- %s?%n", pattern.replaceFirst("can", "Can it")
+        System.out.printf("- %s?%n", fact.replaceFirst("can", "Can it")
                 .replaceFirst("has", "Does it have")
                 .replaceFirst("is", "Is it"));
 

@@ -25,10 +25,7 @@ public class Main {
                                                                 "Oh, no, don't try to confuse me: say yes or no.");
     final static List<String> phrasesToSayGoodbye = List.of("Bye", "Goodbye", "See you later", "Have a nice day");
     static BinaryTree tree = new BinaryTree();
-
-    static String yes;
-
-    static String no;
+    static String newAnimal;
     public static void main(String[] args) {
         greetUser();
     }
@@ -52,7 +49,7 @@ public class Main {
     private static void enterAnimals() {
         System.out.println("I want to learn about animals.");
         System.out.println("Which animal do you like most?");
-        yes = addArticle(input());
+        tree.root = new Node(addArticle(input()));
         playGame();
 
     }
@@ -93,7 +90,15 @@ public class Main {
             line = input();
         } while (!line.isBlank());
 
-        System.out.printf("Is it %s?%n", yes);
+        if (tree.root.value.matches("(a|an)\\s\\w*")) {
+            System.out.printf("Is it %s?%n", tree.root.value);
+        } else {
+            System.out.printf("%s?%n", tree.root.value.replaceFirst("can", "Can it")
+                    .replaceFirst("has", "Does it have")
+                    .replaceFirst("is", "Is it"));
+        }
+
+
         String confirmation = input().toLowerCase().strip();
         while (!isRightConfirmation(confirmation)) {
             askClarificationQuestion();
@@ -101,7 +106,7 @@ public class Main {
         }
         if (negativeAnswers.contains(confirmation.replaceAll("!\\.",""))) {
             System.out.println("I give up. What animal do you have in mind?");
-            no = addArticle(input());
+            newAnimal = addArticle(input());
             specifyFacts();
         } else if (positiveAnswers.contains(confirmation.replaceAll("!\\.",""))) {
             repeatGame();
@@ -110,7 +115,7 @@ public class Main {
     }
 
     private static void specifyFacts() {
-        System.out.printf("Specify a fact that distinguishes %s from %s.%n", yes, no);
+        System.out.printf("Specify a fact that distinguishes %s from %s.%n", tree.root.value, newAnimal);
         System.out.printf("The sentence should be of the format: %n" +
                 "- It can ...%n" +
                 "- It has ...%n" +
@@ -140,17 +145,19 @@ public class Main {
 
     private static void addFactToAnotherAnimal(String fact) {
 
-        System.out.printf("Is the statement correct for %s?%n", no);
+        System.out.printf("Is the statement correct for %s?%n", newAnimal);
         String confirmation = input().toLowerCase().strip();
         while (!isRightConfirmation(confirmation)) {
             askClarificationQuestion();
             confirmation = input().toLowerCase();
         }
-        tree.root = new Node(fact);
-        if (negativeAnswers.contains(confirmation.replaceAll("!\\.", ""))) {
-            tree.root.left = new Node(yes);
-            tree.root.right = new Node(no);
 
+
+        if (negativeAnswers.contains(confirmation.replaceAll("!\\.", ""))) {
+            tree.root.right = new Node(fact);
+            tree.root.right.left = tree.root;
+            tree.root = tree.root.right;
+            tree.root.right = new Node(newAnimal);
         } //else if (positiveAnswers.contains(confirmation.replaceAll("!\\.", ""))) {
 
         //}

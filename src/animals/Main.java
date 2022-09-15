@@ -65,14 +65,20 @@ public class Main {
 
     private static String addArticle(String nameOfAnimal) {
         //check first letter(vowel or not) in name of animal and add article by rules
-        nameOfAnimal = nameOfAnimal.replaceAll("\\b(a|an|the)\\b\\s", "");
         String animalWithArticle;
+        if (!nameOfAnimal.equalsIgnoreCase("an unicorn") && !nameOfAnimal.equalsIgnoreCase("a unicorn")) {
 
-        if (nameOfAnimal.toLowerCase().matches("^[aeiyou].*\\b\\s?\\w*|^xeme\\s?\\w*")) {
-            animalWithArticle = "an " + nameOfAnimal.toLowerCase();
+            nameOfAnimal = nameOfAnimal.replaceAll("\\b(a|an|the)\\b\\s", "");
+
+            if (nameOfAnimal.toLowerCase().matches("^[aeiyou].*\\b\\s?\\w*|^xeme\\s?\\w*")) {
+                animalWithArticle = "an " + nameOfAnimal.toLowerCase();
+            } else {
+                animalWithArticle = "a " + nameOfAnimal.toLowerCase();
+            }
         } else {
-            animalWithArticle = "a " + nameOfAnimal.toLowerCase();
+            animalWithArticle = nameOfAnimal.toLowerCase();
         }
+
         return animalWithArticle;
 
     }
@@ -80,9 +86,13 @@ public class Main {
     private static void playGame() {
         System.out.printf("Wonderful! I've learned so much about animals!\n" +
                 "Let's play a game!\n" +
-                "You think of an animal, and I guess it.\n" +
-                "Press enter when you're ready.%n");
-        input();
+                "You think of an animal, and I guess it.%n");
+        String line;
+        do {
+            System.out.println("Press enter when you're ready.");
+            line = input();
+        } while (!line.isBlank());
+
         System.out.printf("Is it %s?%n", yes);
         String answer = input().toLowerCase();
         if (negativeAnswers.contains(answer)) {
@@ -104,8 +114,6 @@ public class Main {
     private static void addFact(String fact) {
 
             if (isCorrectFact(fact)) {
-                String pattern = fact.replaceAll("\\b(It|it)\\b\\s", "").
-                        replaceAll("[!?.,:;]+", "");
                 addFactToAnotherAnimal(fact);
 
             } else {

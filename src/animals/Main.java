@@ -6,8 +6,6 @@ import java.util.regex.Pattern;
 
 
 public class Main {
-    static ArrayList<String> listOfAnimals = new ArrayList<>();
-    static HashMap<String, String> animals = new HashMap<>();
     final static LocalTime now = LocalTime.now();
 
     final static LocalTime night = LocalTime.of(3,0);
@@ -84,7 +82,8 @@ public class Main {
                 "Let's play a game!\n" +
                 "You think of an animal, and I guess it.\n" +
                 "Press enter when you're ready.%n");
-        System.out.printf("It is %s?%n", yes);
+        input();
+        System.out.printf("Is it %s?%n", yes);
         String answer = input().toLowerCase();
         if (negativeAnswers.contains(answer)) {
             System.out.println("I give up. What animal do you have in mind?");
@@ -133,11 +132,11 @@ public class Main {
             askClarificationQuestion();
         }
         tree.root = new Node(fact);
-        if (negativeAnswers.contains(confirmation)) {
+        if (negativeAnswers.contains(confirmation.replaceAll("!\\.", ""))) {
             tree.root.left = new Node(yes);
             tree.root.right = new Node(no);
 
-        } //else if (positiveAnswers.contains(confirmation)) {
+        } //else if (positiveAnswers.contains(confirmation.replaceAll("!\\.", ""))) {
 
         //}
         printResume(fact);
@@ -149,14 +148,25 @@ public class Main {
                 .replaceFirst("\\bhas\\b", "doesn't have")
                 .replaceFirst("\\bis\\b", "isn't");
         System.out.println("I have learned the following facts about animals:");
-        System.out.printf("- %s %s.%n", tree.root.left.value.replaceFirst("\\b(a|an)\\b", "The"), animals.get(listOfAnimals.get(0)));
-        System.out.printf("- %s %s.%n", tree.root.right.value.replaceFirst("\\b(a|an)\\b", "The"), animals.get(listOfAnimals.get(1)));
+        System.out.printf("- %s %s.%n", tree.root.left.value.replaceFirst("\\b(a|an)\\b", "The"), positive);
+        System.out.printf("- %s %s.%n", tree.root.right.value.replaceFirst("\\b(a|an)\\b", "The"), negative);
         System.out.println("I can distinguish these animals by asking the question:");
-        System.out.printf("- %s?%n", fact.replaceFirst("can", "Can it")
+        System.out.printf("- %s?%n", positive.replaceFirst("can", "Can it")
                 .replaceFirst("has", "Does it have")
                 .replaceFirst("is", "Is it"));
+        System.out.println("Nice! I've learned so much about animals!");
+        repeatGame();
+    }
 
-        sayGoodBye();
+    private static void repeatGame() {
+        System.out.println("Would you like to play again?");
+        String confirmation = input().toLowerCase();
+        while (!isRightConfirmation(confirmation)) {
+            askClarificationQuestion();
+        }
+        if (negativeAnswers.contains(confirmation.replaceAll("!\\.", ""))) {
+            sayGoodBye();
+        }
     }
 
     private static boolean isRightConfirmation(String confirmation) {

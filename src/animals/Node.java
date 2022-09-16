@@ -1,6 +1,10 @@
 package animals;
 
-class Node {
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Node {
     String value;
     Node yesNode;
     Node noNode;
@@ -45,6 +49,7 @@ class Node {
         setNoChild(new Node(value));
     }
 
+    @JsonIgnore
     public boolean isLeaf() {
         return (yesNode == null) && (noNode == null);
     }

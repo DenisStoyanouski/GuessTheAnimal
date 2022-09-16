@@ -1,4 +1,11 @@
 package animals;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalTime;
 import java.util.Scanner;
 import java.util.Random;
@@ -6,7 +13,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Play {
-
+    ObjectMapper objectMapper;
+    String fileName;
     private Node root;
     private Node endNode;
 
@@ -31,7 +39,22 @@ public class Play {
             " - It is a mammal";
 
     public Play() {
+
         this.scn = new Scanner(System.in);
+    }
+
+    public void launchFile() {
+        fileName = String.format("animals.%s", Main.fileType);
+        switch (Main.fileType) {
+            case "json" : objectMapper = new JsonMapper();
+            break;
+            case "xml" : objectMapper = new XmlMapper();
+            break;
+            case "yaml" : objectMapper = new YAMLMapper();
+            break;
+            default: break;
+        }
+        File file = new File(String.format(".\\%s",fileName));
     }
 
     public void greetings() {
@@ -97,7 +120,7 @@ public class Play {
         }
     }
 
-    public void gameStart(){
+    public void gameStart() throws IOException {
         greetings();
         rootSetup();
         while(keepPlaying){
@@ -115,6 +138,9 @@ public class Play {
             askToContinue();
         }
         goodBye();
+        objectMapper
+                .writerWithDefaultPrettyPrinter()
+                .writeValue(new File(fileName), root);
     }
 
     public void specifyFact(String firstAnimal, String secondAnimal) {
@@ -136,7 +162,7 @@ public class Play {
     }
 
     public boolean askAboutDistinction(String firstAnimal, String secondAnimal){
-        System.out.printf("Is it correct for %s?\n",secondAnimal);
+        System.out.printf("Is the statement correct for %s?\n",secondAnimal);
         boolean isFactTrueForTheSecondAnimal = getYesNoAnswer();
         System.out.println("I learned the following facts about animals:");
         System.out.println(getAnimalFact(firstAnimal, !isFactTrueForTheSecondAnimal));

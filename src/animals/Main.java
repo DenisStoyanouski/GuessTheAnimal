@@ -150,10 +150,10 @@ public class Main {
         System.out.printf("Is the statement correct for %s?%n", newAnimal);
         String confirmation = checkConfirmation();
         if ("no".equals(confirmation)) {
-            tree.root.right = new Node(fact);
+            /*tree.root.right = new Node(fact);
             tree.root.right.right = tree.root;
             tree.root = tree.root.right;
-            tree.root.left = new Node(newAnimal);
+            tree.root.left = new Node(newAnimal);*/
 
         } //else if (positiveAnswers.contains(confirmation.replaceAll("!\\.", ""))) {
 

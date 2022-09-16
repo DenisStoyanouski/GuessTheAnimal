@@ -70,10 +70,15 @@ public class Play {
         }
     }
 
-    public void rootSetup(){
-        System.out.println("I want to learn about animals.\n" +
-                "Which animal do you like most?");
-        root = new Node(processInput(scn.nextLine().toLowerCase()));
+    public void rootSetup() throws IOException {
+        if (file.exists()) {
+            root = objectMapper.readValue(file, Node.class);
+        } else {
+            System.out.println("I want to learn about animals.\n" +
+                    "Which animal do you like most?");
+            root = new Node(processInput(scn.nextLine().toLowerCase()));
+        }
+
 
     }
 

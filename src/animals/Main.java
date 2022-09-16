@@ -100,11 +100,11 @@ public class Main {
         }
 
         String confirmation = checkConfirmation();
-        if (negativeAnswers.contains(confirmation.replaceAll("!\\.",""))) {
+        if ("no".equals(confirmation)) {
             System.out.println("I give up. What animal do you have in mind?");
             newAnimal = addArticle(input());
             specifyFacts();
-        } else if (positiveAnswers.contains(confirmation.replaceAll("!\\.",""))) {
+        } else if ("yes".equals(confirmation)) {
             System.out.printf("Is it %s?%n", tree.root.right != null ? tree.root.right.value : tree.root.value);
 
             String confirmationNext = input().toLowerCase().strip();
@@ -180,9 +180,9 @@ public class Main {
     private static void repeatGame() {
         System.out.println("Would you like to play again?");
         String confirmation = checkConfirmation();
-        if ("yes".equals(confirmation)) {
+        if ("no".equals(confirmation)) {
             sayGoodBye();
-        } else if ("no".equals(confirmation)) {
+        } else if ("yes".equals(confirmation)) {
             playGame();
         }
     }

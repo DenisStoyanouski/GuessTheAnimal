@@ -10,6 +10,9 @@ class Node {
         yesNode = null;
         noNode = null;
     }
+
+    public Node() {
+    }
     public String getValue() {
         return this.value;
     }

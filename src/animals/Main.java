@@ -29,6 +29,7 @@ public class Main {
     public static void main(String[] args) {
         greetUser();
     }
+
     private static void greetUser() {
         // depend on local time say greetings
         if (now.isAfter(LocalTime.MIDNIGHT) && now.isBefore(night)) {
@@ -93,23 +94,24 @@ public class Main {
         if (tree.root.value.matches("(a|an)\\s\\w*")) {
             System.out.printf("Is it %s?%n", tree.root.value);
         } else {
-            System.out.printf("%s?%n", tree.root.value.replaceFirst("can", "Can it")
-                    .replaceFirst("has", "Does it have")
-                    .replaceFirst("is", "Is it"));
+            System.out.printf("%s?%n", tree.root.value.replaceFirst("it can", "Can it")
+                    .replaceFirst("it has", "Does it have")
+                    .replaceFirst("it is", "Is it"));
         }
 
-
-        String confirmation = input().toLowerCase().strip();
-        while (!isRightConfirmation(confirmation)) {
-            askClarificationQuestion();
-            confirmation = input().toLowerCase().strip();
-        }
+        String confirmation = checkConfirmation();
         if (negativeAnswers.contains(confirmation.replaceAll("!\\.",""))) {
             System.out.println("I give up. What animal do you have in mind?");
             newAnimal = addArticle(input());
             specifyFacts();
         } else if (positiveAnswers.contains(confirmation.replaceAll("!\\.",""))) {
-            repeatGame();
+            System.out.printf("Is it %s?%n", tree.root.right != null ? tree.root.right.value : tree.root.value);
+
+            String confirmationNext = input().toLowerCase().strip();
+
+            while (!isRightConfirmation(confirmationNext)) {
+                askClarificationQuestion();
+            }
         }
 
     }
@@ -146,18 +148,13 @@ public class Main {
     private static void addFactToAnotherAnimal(String fact) {
 
         System.out.printf("Is the statement correct for %s?%n", newAnimal);
-        String confirmation = input().toLowerCase().strip();
-        while (!isRightConfirmation(confirmation)) {
-            askClarificationQuestion();
-            confirmation = input().toLowerCase();
-        }
-
-
-        if (negativeAnswers.contains(confirmation.replaceAll("!\\.", ""))) {
+        String confirmation = checkConfirmation();
+        if ("no".equals(confirmation)) {
             tree.root.right = new Node(fact);
-            tree.root.right.left = tree.root;
+            tree.root.right.right = tree.root;
             tree.root = tree.root.right;
-            tree.root.right = new Node(newAnimal);
+            tree.root.left = new Node(newAnimal);
+
         } //else if (positiveAnswers.contains(confirmation.replaceAll("!\\.", ""))) {
 
         //}
@@ -170,8 +167,8 @@ public class Main {
                 .replaceFirst("\\bhas\\b", "doesn't have")
                 .replaceFirst("\\bis\\b", "isn't");
         System.out.println("I have learned the following facts about animals:");
-        System.out.printf("- %s %s.%n", tree.root.left.value.replaceFirst("\\b(a|an)\\b", "The"), positive);
-        System.out.printf("- %s %s.%n", tree.root.right.value.replaceFirst("\\b(a|an)\\b", "The"), negative);
+        System.out.printf("- %s %s.%n", tree.root.right.value.replaceFirst("\\b(a|an)\\b", "The"), positive);
+        System.out.printf("- %s %s.%n", tree.root.left.value.replaceFirst("\\b(a|an)\\b", "The"), negative);
         System.out.println("I can distinguish these animals by asking the question:");
         System.out.printf("- %s?%n", positive.replaceFirst("can", "Can it")
                 .replaceFirst("has", "Does it have")
@@ -182,18 +179,34 @@ public class Main {
 
     private static void repeatGame() {
         System.out.println("Would you like to play again?");
+        String confirmation = checkConfirmation();
+        if ("yes".equals(confirmation)) {
+            sayGoodBye();
+        } else if ("no".equals(confirmation)) {
+            playGame();
+        }
+    }
+
+    private static String checkConfirmation() {
         String confirmation = input().toLowerCase();
         while (!isRightConfirmation(confirmation)) {
             askClarificationQuestion();
             confirmation = input().toLowerCase();
         }
-        if (negativeAnswers.contains(confirmation.replaceAll("!\\.", ""))) {
-            sayGoodBye();
-        } else if (positiveAnswers.contains(confirmation.replaceAll("!\\.", ""))) {
-            playGame();
+        for (String answer : positiveAnswers) {
+            if (confirmation.matches(answer + "[!.]?")) {
+                confirmation = "yes";
+                break;
+            }
         }
+        for (String answer : negativeAnswers) {
+            if (confirmation.matches(answer + "[!.]?")) {
+                confirmation = "no";
+                break;
+            }
+        }
+        return confirmation;
     }
-
 
 
     private static boolean isRightConfirmation(String confirmation) {

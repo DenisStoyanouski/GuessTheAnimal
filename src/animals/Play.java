@@ -15,6 +15,8 @@ import java.util.regex.Pattern;
 public class Play {
     ObjectMapper objectMapper;
     String fileName;
+
+    File file;
     private Node root;
     private Node endNode;
 
@@ -54,7 +56,7 @@ public class Play {
             break;
             default: break;
         }
-        File file = new File(String.format(".\\%s",fileName));
+        file = new File(String.format(".\\%s",fileName));
     }
 
     public void greetings() {
@@ -138,9 +140,10 @@ public class Play {
             askToContinue();
         }
         goodBye();
+
         objectMapper
                 .writerWithDefaultPrettyPrinter()
-                .writeValue(new File(fileName), root);
+                .writeValue(file, root);
     }
 
     public void specifyFact(String firstAnimal, String secondAnimal) {

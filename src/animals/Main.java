@@ -13,9 +13,7 @@ public class Main {
         } else {
             fileType = args[1];
         }
-
         Play app = new Play();
-        app.launchFile();
         app.gameStart();
 
     }

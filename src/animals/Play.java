@@ -41,22 +41,7 @@ public class Play {
             " - It is a mammal";
 
     public Play() {
-
         this.scn = new Scanner(System.in);
-    }
-
-    public void launchFile() {
-        fileName = String.format("animals.%s", Main.fileType);
-        switch (Main.fileType) {
-            case "json" : objectMapper = new JsonMapper();
-            break;
-            case "xml" : objectMapper = new XmlMapper();
-            break;
-            case "yaml" : objectMapper = new YAMLMapper();
-            break;
-            default: break;
-        }
-        file = new File(String.format(".\\%s",fileName));
     }
 
     public void greetings() {
@@ -71,6 +56,7 @@ public class Play {
     }
 
     public void rootSetup() throws IOException {
+        createFile();
         if (file.exists()) {
             root = objectMapper.readValue(file, Node.class);
         } else {
@@ -78,18 +64,30 @@ public class Play {
                     "Which animal do you like most?");
             root = new Node(processInput(scn.nextLine().toLowerCase()));
         }
+    }
 
-
+    public void createFile() {
+        fileName = String.format("animals.%s", Main.fileType);
+        switch (Main.fileType) {
+            case "json" : objectMapper = new JsonMapper();
+                break;
+            case "xml" : objectMapper = new XmlMapper();
+                break;
+            case "yaml" : objectMapper = new YAMLMapper();
+                break;
+            default: break;
+        }
+        file = new File(String.format(".\\%s",fileName));
     }
 
     private boolean guess(Node node){
-        if(node.isLeaf()){
+        if (node.isLeaf()){
             System.out.println("Is it " + node.getValue() + "?");
             endNode = node;
             return getYesNoAnswer();
         } else {
             System.out.println(node.getValue());
-            if(getYesNoAnswer()){
+            if (getYesNoAnswer()){
                 return guess(node.getYesChild());
             } else {
                 return guess(node.getNoChild());
@@ -144,11 +142,18 @@ public class Play {
             }
             askToContinue();
         }
+        saveTreeToFile();
         goodBye();
+    }
 
-        objectMapper
-                .writerWithDefaultPrettyPrinter()
-                .writeValue(file, root);
+    public void saveTreeToFile() {
+        try {
+            objectMapper
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValue(file, root);
+        } catch (IOException e) {
+            System.out.println("File not exist!");
+        }
     }
 
     public void specifyFact(String firstAnimal, String secondAnimal) {

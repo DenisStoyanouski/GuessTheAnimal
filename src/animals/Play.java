@@ -1,4 +1,5 @@
 package animals;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -25,7 +26,7 @@ public class Play {
     private String factRest;
 
     private boolean keepPlaying = true;
-    private final String[] consonants = {"a", "e", "i", "o","u", "y", "xe"};
+    private final String[] consonants = {"a", "e", "i", "o", "u", "y", "xe"};
     private final String[] exceptions = {"unicorn"}; // :3
     private final Scanner scn;
     private final String[] answerYes = {"y", "yes", "yeah", "yep", "sure", "right",
@@ -46,9 +47,9 @@ public class Play {
 
     public void greetings() {
         int currentHour = LocalTime.now().getHour();
-        if(currentHour >= 5 && currentHour < 12) {
+        if (currentHour >= 5 && currentHour < 12) {
             System.out.println("Good morning!\n");
-        } else if (currentHour >= 12 && currentHour < 18){
+        } else if (currentHour >= 12 && currentHour < 18) {
             System.out.println("Good afternoon!\n");
         } else {
             System.out.println("Good evening!\n");
@@ -69,25 +70,29 @@ public class Play {
     public void createFile() {
         fileName = String.format("animals.%s", Main.fileType);
         switch (Main.fileType) {
-            case "json" : objectMapper = new JsonMapper();
+            case "json":
+                objectMapper = new JsonMapper();
                 break;
-            case "xml" : objectMapper = new XmlMapper();
+            case "xml":
+                objectMapper = new XmlMapper();
                 break;
-            case "yaml" : objectMapper = new YAMLMapper();
+            case "yaml":
+                objectMapper = new YAMLMapper();
                 break;
-            default: break;
+            default:
+                break;
         }
-        file = new File(String.format(".\\%s",fileName));
+        file = new File(String.format(".\\%s", fileName));
     }
 
-    private boolean guess(Node node){
-        if (node.isLeaf()){
+    private boolean guess(Node node) {
+        if (node.isLeaf()) {
             System.out.println("Is it " + node.getValue() + "?");
             endNode = node;
             return getYesNoAnswer();
         } else {
             System.out.println(node.getValue());
-            if (getYesNoAnswer()){
+            if (getYesNoAnswer()) {
                 return guess(node.getYesChild());
             } else {
                 return guess(node.getNoChild());
@@ -99,13 +104,13 @@ public class Play {
         System.out.println("Yay!!! I did it! I'm so smart! :)\n");
     }
 
-    private void guessedIncorrectly(){
+    private void guessedIncorrectly() {
         System.out.println("I give up. What animal do you have in mind?\n");
         String newAnimal = processInput(scn.nextLine().toLowerCase());
         specifyFact(endNode.getValue(), newAnimal);
         boolean isFactTrueForNewAnimal = askAboutDistinction(endNode.getValue(), newAnimal);
         String distinctionQuestion = getDistinctionQuestion();
-        if(isFactTrueForNewAnimal){
+        if (isFactTrueForNewAnimal) {
             endNode.insertYesChild(newAnimal);
             endNode.insertNoChild(endNode.getValue());
         } else {
@@ -118,9 +123,9 @@ public class Play {
         System.out.println("Nice! I've learned so much about animals!\n");
     }
 
-    private void askToContinue(){
+    private void askToContinue() {
         System.out.println("Would you like to play again?");
-        if(!getYesNoAnswer()) {
+        if (!getYesNoAnswer()) {
             keepPlaying = false;
         }
     }
@@ -128,14 +133,14 @@ public class Play {
     public void gameStart() throws IOException {
         greetings();
         rootSetup();
-        while(keepPlaying){
+        while (keepPlaying) {
             System.out.println("Wonderful! I've learned so much about animals!\n" +
                     "Let's play a game!\n" +
                     "You think of an animal, and I guess it.\n" +
                     "Press enter when you're ready.");
             scn.nextLine();
 
-            if(guess(root)){
+            if (guess(root)) {
                 guessedCorrectly();
             } else {
                 guessedIncorrectly();
@@ -158,24 +163,24 @@ public class Play {
 
     public void specifyFact(String firstAnimal, String secondAnimal) {
         boolean validFact = false;
-        while(!validFact){
+        while (!validFact) {
             System.out.printf(specifyFactPrompt, firstAnimal, secondAnimal);
-            fact = scn.nextLine().replaceAll("\\.","").toLowerCase();
+            fact = scn.nextLine().replaceAll("\\.", "").toLowerCase();
             validFact = fact.matches("it (can|has|is)\\b.*");
-            if(!validFact){
+            if (!validFact) {
                 System.out.println(invalidFactPrompt);
             }
         }
         Matcher verbMatcher = Pattern.compile("(can|has|is)").matcher(fact);
-        if(verbMatcher.find()) {
+        if (verbMatcher.find()) {
             factVerb = verbMatcher.group();
-            factRest = fact.replaceFirst("it (can|has|is) ","");
+            factRest = fact.replaceFirst("it (can|has|is) ", "");
         }
 
     }
 
-    public boolean askAboutDistinction(String firstAnimal, String secondAnimal){
-        System.out.printf("Is the statement correct for %s?\n",secondAnimal);
+    public boolean askAboutDistinction(String firstAnimal, String secondAnimal) {
+        System.out.printf("Is the statement correct for %s?\n", secondAnimal);
         boolean isFactTrueForTheSecondAnimal = getYesNoAnswer();
         System.out.println("I learned the following facts about animals:");
         System.out.println(getAnimalFact(firstAnimal, !isFactTrueForTheSecondAnimal));
@@ -183,10 +188,10 @@ public class Play {
         return isFactTrueForTheSecondAnimal;
     }
 
-    private String getAnimalFact(String animal, boolean isFactTrueForTheAnimal){
+    private String getAnimalFact(String animal, boolean isFactTrueForTheAnimal) {
         StringBuilder animalFact = new StringBuilder();
-        animalFact.append(" - The ").append(animal.replaceFirst("(a |an )",""));
-        switch(factVerb){
+        animalFact.append(" - The ").append(animal.replaceFirst("(a |an )", ""));
+        switch (factVerb) {
             case "can":
                 animalFact.append(isFactTrueForTheAnimal ? " can " : " can't ");
                 break;
@@ -203,10 +208,10 @@ public class Play {
         return animalFact.toString();
     }
 
-    private String getDistinctionQuestion(){
+    private String getDistinctionQuestion() {
         StringBuilder distinctionQuestion = new StringBuilder();
         distinctionQuestion.append(" - ");
-        switch(factVerb){
+        switch (factVerb) {
             case "can":
                 distinctionQuestion.append("Can it ");
                 break;
@@ -224,28 +229,27 @@ public class Play {
     }
 
 
-
     private String processInput(String input) {
         String output = input;
-        for(String exception : exceptions){
-            if(input.contains(exception) && (input.startsWith("a ")||
-                    input.startsWith("an ")||
-                    input.startsWith("the "))){
+        for (String exception : exceptions) {
+            if (input.contains(exception) && (input.startsWith("a ") ||
+                    input.startsWith("an ") ||
+                    input.startsWith("the "))) {
                 return input;
             }
         }
-        if(input.startsWith("a ")) {
+        if (input.startsWith("a ")) {
             output = input.replaceFirst("a ", "");
         }
-        if(input.startsWith("an ")) {
+        if (input.startsWith("an ")) {
             output = input.replaceFirst("an ", "");
         }
-        if(input.startsWith("the ")) {
+        if (input.startsWith("the ")) {
             output = input.replaceFirst("the ", "");
         }
         boolean startsWithConsonant = false;
-        for(String consonant : consonants) {
-            if(output.startsWith(consonant)) {
+        for (String consonant : consonants) {
+            if (output.startsWith(consonant)) {
                 startsWithConsonant = true;
                 break;
             }
@@ -255,7 +259,7 @@ public class Play {
 
 
     private boolean getYesNoAnswer() {
-        while(true) {
+        while (true) {
             String answerProcessed = scn.nextLine()
                     .replaceFirst("[.!]", "")
                     .trim()
@@ -276,7 +280,7 @@ public class Play {
 
     private void clarify() {
         Random rand = new Random();
-        switch(rand.nextInt(3)) {
+        switch (rand.nextInt(3)) {
             case 0:
                 System.out.println("Come on, yes or no?");
                 break;
@@ -293,7 +297,7 @@ public class Play {
 
     public void goodBye() {
         Random rand = new Random();
-        switch(rand.nextInt(2)) {
+        switch (rand.nextInt(2)) {
             case 0:
                 System.out.println("Good bye!");
                 break;

@@ -17,6 +17,7 @@ public class Node {
 
     public Node() {
     }
+
     public String getValue() {
         return this.value;
     }
@@ -41,11 +42,11 @@ public class Node {
         this.noNode = noNode;
     }
 
-    public void insertYesChild(String value){
+    public void insertYesChild(String value) {
         setYesChild(new Node(value));
     }
 
-    public void insertNoChild(String value){
+    public void insertNoChild(String value) {
         setNoChild(new Node(value));
     }
 
